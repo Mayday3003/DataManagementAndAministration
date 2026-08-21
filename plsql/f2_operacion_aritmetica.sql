@@ -6,4 +6,4 @@ begin
 
     declare v_respuesta real; 
 
-    if p_operation 9
+    if p_operation = 'addition'
