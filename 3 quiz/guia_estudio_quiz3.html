@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía Quiz 3</title>
+<style>
+:root{
+  --bg:#f7f7f5;--panel:#ffffff;--ink:#1d1f23;--muted:#5d6470;--line:#e2e3e0;
+  --accent:#2457c5;--accent-soft:#e8eefb;--ok:#1f7a4d;--ok-soft:#e5f4ec;
+  --warn:#9a5b00;--warn-soft:#fdf1dc;--bad:#b3261e;--bad-soft:#fbe7e5;
+  --code-bg:#f0f1ee;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15171b;--panel:#1d2025;--ink:#e6e7ea;--muted:#9aa1ad;--line:#2e3239;
+    --accent:#7aa2ff;--accent-soft:#1f2a44;--ok:#5fd19a;--ok-soft:#173326;
+    --warn:#f0b75a;--warn-soft:#3a2c12;--bad:#ff8a80;--bad-soft:#3d1c1a;--code-bg:#111317;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15171b;--panel:#1d2025;--ink:#e6e7ea;--muted:#9aa1ad;--line:#2e3239;
+  --accent:#7aa2ff;--accent-soft:#1f2a44;--ok:#5fd19a;--ok-soft:#173326;
+  --warn:#f0b75a;--warn-soft:#3a2c12;--bad:#ff8a80;--bad-soft:#3d1c1a;--code-bg:#111317;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.layout{display:grid;grid-template-columns:250px 1fr;max-width:1200px;margin:0 auto}
+nav{position:sticky;top:0;height:100vh;overflow:auto;padding:24px 16px;border-right:1px solid var(--line)}
+nav h1{font-size:18px;margin:0 0 4px}
+nav p{margin:0 0 16px;color:var(--muted);font-size:13px}
+nav a{display:block;padding:5px 8px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:14px}
+nav a:hover{background:var(--accent-soft)}
+nav a.sub{padding-left:20px;color:var(--muted);font-size:13px}
+nav button{margin-top:16px;font:inherit;font-size:13px;padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+main{padding:24px 32px 80px;min-width:0}
+section.topic{margin-bottom:56px}
+h2{font-size:28px;margin:8px 0 4px;padding-top:12px}
+h2 small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+h3{font-size:20px;margin:32px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+h4{font-size:16px;margin:20px 0 6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:12px 0}
+.def{border-left:4px solid var(--accent)}
+.key{background:var(--warn-soft);border:1px solid transparent;border-left:4px solid var(--warn)}
+.key strong:first-child{color:var(--warn)}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font:13.5px/1.5 ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;margin:10px 0}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+pre code{background:none;padding:0;font-size:inherit}
+.c{color:var(--muted)}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+details{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:0 16px}
+details[open]{padding-bottom:12px}
+summary{cursor:pointer;padding:12px 0;font-weight:600}
+summary .tag{font-size:11px;font-weight:600;padding:2px 7px;border-radius:99px;margin-left:8px;vertical-align:middle}
+.tag.slide{background:var(--accent-soft);color:var(--accent)}
+.tag.new{background:var(--ok-soft);color:var(--ok)}
+.ans{border-left:3px solid var(--ok);padding-left:12px;margin-top:6px}
+.good{color:var(--ok);font-weight:600}.badc{color:var(--bad);font-weight:600}
+.quiz .q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:14px 0}
+.quiz .q p{margin:0 0 8px;font-weight:600}
+.quiz .opts{display:grid;gap:6px}
+.quiz button.opt{font:inherit;text-align:left;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.quiz button.opt:hover{border-color:var(--accent)}
+.quiz button.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.quiz button.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.quiz .exp{display:none;margin-top:10px;font-size:14.5px;color:var(--muted)}
+.quiz .q.done .exp{display:block}
+#score{position:sticky;top:0;background:var(--bg);padding:8px 0;font-weight:600;z-index:2}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr}
+  nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  main{padding:16px 16px 60px}
+  .two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav>
+  <h1>Quiz 3 · Gestión de Datos</h1>
+  <p>Índices · Plan de ejecución · Motores · Particiones · Eventos</p>
+  <a href="#indices">15 · Índices</a>
+  <a class="sub" href="#idx-ej">Ejercicios resueltos</a>
+  <a class="sub" href="#idx-extra">Práctica extra</a>
+  <a href="#plan">16 · Plan de ejecución</a>
+  <a class="sub" href="#plan-ej">Ejercicios resueltos</a>
+  <a class="sub" href="#plan-extra">Práctica extra</a>
+  <a href="#motores">17 · Motores</a>
+  <a class="sub" href="#mot-ej">Ejercicios resueltos</a>
+  <a class="sub" href="#mot-extra">Práctica extra</a>
+  <a href="#part">18 · Particionamiento</a>
+  <a class="sub" href="#part-ej">Ejercicios resueltos</a>
+  <a class="sub" href="#part-extra">Práctica extra</a>
+  <a href="#eventos">19 · Eventos</a>
+  <a class="sub" href="#ev-ej">Ejercicios resueltos</a>
+  <a class="sub" href="#ev-extra">Práctica extra</a>
+  <a href="#cheat">Hoja de comandos</a>
+  <a href="#quiz">Simulacro (autoevaluación)</a>
+  <button id="themeBtn" type="button">Cambiar tema</button>
+</nav>
+
+<main>
+<p class="c">Guía construida a partir de las diapositivas GD-15 a GD-19. Las tarjetas <span class="tag slide" style="font-size:11px;padding:2px 7px;border-radius:99px">diapositiva</span> son ejercicios del profesor con solución propuesta; las <span class="tag new" style="font-size:11px;padding:2px 7px;border-radius:99px">extra</span> son preguntas nuevas al mismo estilo. Todo está en sintaxis MariaDB/MySQL.</p>
+
+<!-- ======================= 15 INDICES ======================= -->
+<section class="topic" id="indices">
+<h2><small>Clase 15</small>Índices</h2>
+
+<h3>Conceptos clave</h3>
+<div class="card def"><strong>Índice:</strong> estructura de datos que permite agilizar las consultas evitando la lectura de datos innecesarios. Generalmente son <b>árboles B+</b>. "Agilizar" no significa "hacer magia".</div>
+<div class="card def"><strong>Cardinalidad:</strong> cantidad de valores distintos en un conjunto (o también, cuántas veces aparece un valor en un conjunto).</div>
+<div class="card def"><strong>Selectividad:</strong> indica qué tanto se puede reducir la cantidad de registros a buscar dependiendo de una condición.
+<ul>
+<li>✅ De 100'000.000 a 1 → <code>where person_id = '123'</code> (excelente)</li>
+<li>➖ De 100'000.000 a 50'000.000 → <code>where gender = 'FEMALE'</code> (regular)</li>
+<li>❌ De 100'000.000 a 99'000.000 → <code>where age between 1 and 90</code> (inútil)</li>
+</ul></div>
+<div class="card def"><strong>Full scan:</strong> recorrer la tabla entera para encontrar los registros que coinciden con una condición. En tablas pequeñas no importa; en tablas grandes destruye el rendimiento (CPU, disco, contención en capas superiores). Es "uno de los peores enemigos del rendimiento". Se evita con <b>(1)</b> índices correctos y <b>(2)</b> filtros bien hechos en el <code>where</code>.</div>
+
+<h4>Ejemplo de la diapositiva: tabla <code>singers</code> (20 registros)</h4>
+<table>
+<tr><th>Columna</th><th>Cardinalidad</th><th>Selectividad</th><th>¿Indexar?</th></tr>
+<tr><td>id</td><td>20</td><td>Muy alta (20 únicos de 20)</td><td class="good">Sí (PK)</td></tr>
+<tr><td>full_name</td><td>20</td><td>Muy alta</td><td class="good">Sí, si se busca por nombre</td></tr>
+<tr><td>height</td><td>13</td><td>Alta (pocos repetidos)</td><td>Solo si se busca por rangos de estatura</td></tr>
+<tr><td>genre</td><td>4</td><td>Baja</td><td class="badc">Poco útil</td></tr>
+<tr><td>gender</td><td>2</td><td>Muy baja</td><td class="badc">No (filtra ~50%)</td></tr>
+</table>
+<p><b>Analogía del libro:</b> buscar página por página = <b>full scan</b>; leer la tabla de contenido e ir directo = <b>uso de índice</b>. Pero en una revista de 10 páginas el índice agrega complejidad sin ganar velocidad → en tablas pequeñas no vale la pena.</p>
+<p><b>Tamaños orientativos:</b> ~1.000 registros = muy pequeña; cientos de miles = mediana; decenas de millones = grande.</p>
+
+<h3>Índice normal vs índice invertido</h3>
+<div class="two">
+<pre><span class="c">-- Índice "normal": lugar del valor completo</span>
+SELENA GOMEZ ........ 1
+BECKY G ............. 2
+KAROL G ............. 3
+SELENA QUINTANILLA .. 4</pre>
+<pre><span class="c">-- Índice invertido: lugar de cada PALABRA</span>
+SELENA ........ [1, 4]
+GOMEZ ......... [1]
+BECKY ......... [2]
+G ............. [2, 3]
+QUINTANILLA ... [4]</pre>
+</div>
+<p>El invertido se usa para textos largos (Elasticsearch, motores de búsqueda web). En MariaDB es lo que hay detrás de <code>FULLTEXT</code>.</p>
+
+<h3>Tipos de índice</h3>
+<h4>Por estructura de datos</h4>
+<table>
+<tr><th>Tipo</th><th>Estructura</th><th>Uso</th></tr>
+<tr><td><b>BTREE+</b></td><td>Árbol B+ y lista enlazada</td><td>Rangos: <code>&gt; &gt;= = &lt; &lt;= BETWEEN LIKE 'abc%'</code>. <b>Por defecto</b> en la mayoría de DBMS.</td></tr>
+<tr><td><b>HASH</b></td><td>Tabla hash</td><td>Solo valores <b>exactos</b> (<code>=</code>). <b>No soporta rangos.</b></td></tr>
+<tr><td><b>RTREE</b></td><td>Jerárquica con rectángulos</td><td>Búsquedas geoespaciales; casos muy puntuales.</td></tr>
+<tr><td><b>Invertido</b></td><td>Tabla hash + lista</td><td>Palabras dentro de textos muy grandes.</td></tr>
+</table>
+<h4>Por valores</h4>
+<table>
+<tr><th>Tipo</th><th>¿Duplicados?</th><th>¿Nulos?</th><th>Descripción</th></tr>
+<tr><td>Primary key</td><td>❌</td><td>❌</td><td>Registro único</td></tr>
+<tr><td>Unique</td><td>❌</td><td>✅</td><td>Único, permitiendo nulos</td></tr>
+<tr><td>Plain</td><td>✅</td><td>✅</td><td>Permite duplicados</td></tr>
+<tr><td>Full text</td><td>✅</td><td>✅</td><td>Palabras/frases en char, varchar, text</td></tr>
+</table>
+
+<h3>Índices de 1 nivel vs "n" niveles (compuestos)</h3>
+<p>Con <code>where genre='female' and id_type='CC'</code> sobre una tabla 50/50: un índice solo por <code>genre</code> descarta el 50%. Un índice <b>multinivel</b> <code>(genre, id_type)</code> hace doble filtro: omite <code>male</code> y también los <code>id_type &lt;&gt; 'CC'</code>.</p>
+<div class="card key"><strong>En los índices multinivel el orden importa, y mucho.</strong> Un índice <code>(last_name, first_name)</code> sirve para filtrar por <code>last_name</code> o por <code>last_name + first_name</code>, pero <b>no</b> para filtrar solo por <code>first_name</code> (regla del prefijo izquierdo).</div>
+
+<h3>¿Qué tener en cuenta?</h3>
+<ul>
+<li><b>Consulta más rápida → escritura más lenta</b>: insert/update/delete pueden implicar rebalanceo de árboles.</li>
+<li><b>No todo es candidato a indexar</b>: solo los campos que lo necesiten.</li>
+<li><b>LIKE puede anular el índice</b>:
+  <code>like 'A%'</code> → <span class="good">usa índice</span> ·
+  <code>like '%A'</code> → <span class="badc">no usa</span> ·
+  <code>like '%A%'</code> → <span class="badc">no usa</span></li>
+<li>MariaDB permite crear <b>varios índices sobre el mismo campo</b>: impacta el rendimiento y no mejora nada.</li>
+<li>Si no se especifica <code>using</code>, PK/unique/plain son <b>BTREE</b> por defecto. FULLTEXT no lleva <code>using</code> (usa índice invertido).</li>
+</ul>
+
+<h3>Sintaxis (7 opciones de la diapositiva)</h3>
+<pre><span class="c">-- Op 1: plano btree sobre tabla existente (3 formas equivalentes)</span>
+alter table singers add index (first_name) using btree;
+alter table singers add index idx_sing_fina(first_name) using btree;
+create index idx_sing_fina on singers(first_name) using btree;
+
+<span class="c">-- Op 2: único</span>
+alter table singers add unique index idx_sing_fina(first_name) using btree;
+create unique index idx_sing_fina on singers(first_name) using btree;
+
+<span class="c">-- Op 3: texto completo (sin "using")</span>
+alter table singers add fulltext index idx_sing_fina(first_name);
+create fulltext index idx_sing_fina on singers(first_name);
+
+<span class="c">-- Op 4-7: al crear la tabla</span>
+create table singers (
+  id int(11) not null,
+  first_name varchar(30) not null,
+  last_name  varchar(30) not null,
+  primary key (id),              <span class="c">-- la PK ya tiene índice</span>
+  unique (first_name),           <span class="c">-- índice único</span>
+  fulltext (first_name),         <span class="c">-- índice de texto completo</span>
+  index (last_name, first_name)  <span class="c">-- multinivel: N1 last_name, N2 first_name</span>
+);
+create index idx_sing_lana_fina on singers(last_name, first_name);
+
+<span class="c">-- Borrar (por nombre del índice o del campo)</span>
+alter table singers drop index idx_sing_fina;
+drop index idx_sing_fina on singers;
+
+<span class="c">-- Ver índices (tipo, columnas, cardinalidad...)</span>
+show indexes from singers;
+show indexes from singers where Column_name = 'id';</pre>
+
+<h3>Discusiones grupales (con respuesta sugerida)</h3>
+<details><summary>¿Cuál es el peor índice que se podría crear en la tabla singers? <span class="tag slide">diapositiva</span></summary>
+<pre>| Field      | Type        | Null | Key |
+| id         | int(11)     | NO   | PRI |
+| id_type    | varchar(3)  | NO   | PRI |
+| first_name | varchar(30) | NO   |     |
+| last_name  | varchar(30) | YES  |     |
+| birth_date | date        | NO   |     |
+| genre      | varchar(15) | NO   | MUL |</pre>
+<div class="ans">
+<p>Candidatos a "peor índice":</p>
+<ul>
+<li><b>Un índice duplicado sobre <code>id</code> / <code>(id, id_type)</code></b>: la PK ya está indexada; uno extra solo hace más lenta la escritura y no aporta nada.</li>
+<li><b>Índice sobre <code>genre</code></b> (ya existe, marcado MUL): cardinalidad muy baja (pocos géneros musicales), selectividad mala; casi nunca evita leer gran parte de la tabla.</li>
+<li><b>Un índice <code>HASH</code> sobre <code>birth_date</code></b>: las fechas se buscan por rangos y hash no soporta rangos.</li>
+<li><b>Un <code>UNIQUE</code> sobre <code>first_name</code></b>: es incorrecto en lo funcional (dos cantantes pueden llamarse igual).</li>
+</ul>
+<p>Respuesta corta para el examen: <b>el de menor selectividad o el redundante</b> (genre / duplicar la PK).</p>
+</div></details>
+
+<details><summary>¿Qué índices usar para cada tabla? <span class="tag slide">diapositiva</span></summary>
+<div class="ans">
+<table>
+<tr><th>Tabla</th><th>Índices sugeridos</th><th>Evitar</th></tr>
+<tr><td>Clientes (id, tipo_id, nombre, apellidos, género, dirección, ciudad, país)</td><td>PK <code>(tipo_id, id)</code> o <code>(id)</code>; plain BTREE <code>(apellidos, nombre)</code> para búsquedas por nombre; quizá <code>(pais, ciudad)</code> si se reporta por ubicación.</td><td>Índice solo por género (2-3 valores); índice sobre dirección.</td></tr>
+<tr><td>Históricos de inventario (llenada por trigger)</td><td>Pocos índices: es tabla de <b>escritura intensiva</b>. BTREE por <code>fecha</code> (consultas por rango) y quizá <code>producto_id</code>.</td><td>Muchos índices: cada insert del trigger se haría más lento.</td></tr>
+<tr><td>Inventario</td><td>PK <code>producto_id</code>; unique <code>sku</code>/código de barras; BTREE <code>bodega_id</code>.</td><td>Índices sobre cantidad/stock (cambia todo el tiempo).</td></tr>
+<tr><td>Ingreso por torniquetes</td><td>BTREE <code>(fecha_hora)</code> y <code>(persona_id, fecha_hora)</code>.</td><td>HASH sobre fecha_hora (se consulta por rangos).</td></tr>
+<tr><td>Tienda de ropa en línea</td><td>FULLTEXT sobre <code>nombre, descripcion</code> del producto (buscador); BTREE <code>(categoria, precio)</code>; unique <code>email</code> del cliente.</td><td><code>like '%camisa%'</code> en vez de fulltext.</td></tr>
+</table></div></details>
+
+<details><summary>Tabla singers con 10 millones de registros: ¿vale la pena indexar cada campo? <span class="tag slide">diapositiva</span></summary>
+<div class="ans"><ul>
+<li><b>id</b>: sí (PK, selectividad máxima).</li>
+<li><b>full_name</b>: sí, BTREE (permite <code>like 'SEL%'</code>), o FULLTEXT si se busca por palabras sueltas.</li>
+<li><b>genre</b>: no tiene sentido solo (4 valores → cada uno ~2.5 M filas).</li>
+<li><b>gender</b>: no (2 valores, filtra 50%).</li>
+<li><b>height</b>: solo si hay búsquedas reales por rango; en general no.</li>
+</ul></div></details>
+
+<h3 id="idx-ej">Ejercicios de clase resueltos (BD "tienda")</h3>
+<p class="c">Usuarios 500.000, Productos 50.000, Compras 15'000.000. Los nombres de columna son supuestos; ajústalos a tu script.</p>
+
+<details><summary>Ej. 1 – Contar compras con método de pago CREDIT_CARD <span class="tag slide">diapositiva</span></summary>
+<pre>select count(*) from compras where metodo_pago = 'CREDIT_CARD';</pre>
+<div class="ans">Sin índice → full scan de 15 M filas. Toma nota del tiempo para comparar en el Ej. 5.</div></details>
+
+<details><summary>Ej. 2 – Compras en 2020-10-26, 2020-05-31 y 2024-01-09 <span class="tag slide">diapositiva</span></summary>
+<pre><span class="c">-- Si fecha es DATE:</span>
+select count(*) from compras
+where fecha in ('2020-10-26','2020-05-31','2024-01-09');
+
+<span class="c">-- Si fecha es DATETIME: NO usar date(fecha) (anula el índice), usar rangos</span>
+select count(*) from compras
+where (fecha &gt;= '2020-10-26' and fecha &lt; '2020-10-27')
+   or (fecha &gt;= '2020-05-31' and fecha &lt; '2020-06-01')
+   or (fecha &gt;= '2024-01-09' and fecha &lt; '2024-01-10');</pre></details>
+
+<details><summary>Ej. 3 – Compras en efectivo hechas solo por mujeres <span class="tag slide">diapositiva</span></summary>
+<pre>select count(*)
+from   compras c
+join   usuarios u on u.id = c.usuario_id
+where  c.metodo_pago = 'CASH'
+and    u.genero = 'F';</pre></details>
+
+<details><summary>Ej. 4 – Compras de 2021 de productos Samsung y Apple <span class="tag slide">diapositiva</span></summary>
+<pre>select count(*)
+from   compras c
+join   productos p on p.id = c.producto_id
+where  p.marca in ('Samsung','Apple')
+and    c.fecha &gt;= '2021-01-01' and c.fecha &lt; '2022-01-01';  <span class="c">-- NO year(fecha)=2021</span></pre></details>
+
+<details><summary>Ej. 5 – Índice óptimo para los ejercicios 1 y 2 <span class="tag slide">diapositiva</span></summary>
+<div class="ans">
+<ul>
+<li><b>Ej. 1 (metodo_pago)</b>: búsqueda por valor exacto → en teoría <b>HASH</b>. Pero InnoDB no soporta HASH real (lo convierte silenciosamente a BTREE), así que en la práctica: <code>create index idx_comp_mepa on compras(metodo_pago);</code>. Ojo: baja cardinalidad (pocos métodos), así que la mejora depende de qué tan frecuente sea CREDIT_CARD. Como es un <code>count(*)</code>, el índice además es <b>cubriente</b> (no necesita ir a la tabla) y por eso sí mejora bastante.</li>
+<li><b>Ej. 2 (fecha)</b>: <b>BTREE</b>, porque las fechas se consultan por igualdad y por rangos. <code>create index idx_comp_fech on compras(fecha) using btree;</code></li>
+</ul></div></details>
+
+<details><summary>Ej. 6 – Índices para los ejercicios 3 y 4 <span class="tag slide">diapositiva</span></summary>
+<pre><span class="c">-- Ej 3: filtrar compras por método y unir con usuarios</span>
+create index idx_comp_mepa_usua on compras(metodo_pago, usuario_id);
+<span class="c">-- usuarios.id ya es PK. Índice por genero en usuarios aporta poco (2 valores).</span>
+
+<span class="c">-- Ej 4: productos por marca, y compras por producto + fecha</span>
+create index idx_prod_marc on productos(marca);
+create index idx_comp_prod_fech on compras(producto_id, fecha);</pre>
+<div class="ans">Regla: indexa la <b>clave de join</b> del lado grande (compras) y combínala con el filtro de rango (fecha) <b>después</b> de la columna de igualdad.</div></details>
+
+<details><summary>Ej. 7 – Conclusiones <span class="tag slide">diapositiva</span></summary>
+<div class="ans"><ul>
+<li>Los índices bien elegidos reducen drásticamente el tiempo en tablas grandes (15 M).</li>
+<li>Índices sobre columnas de baja cardinalidad mejoran poco.</li>
+<li>Aplicar funciones a la columna (<code>year(fecha)</code>, <code>date(fecha)</code>) impide usar el índice.</li>
+<li>Crear índices tarda y hace más lentas las escrituras: indexar con sabiduría.</li>
+</ul></div></details>
+
+<h3 id="idx-extra">Práctica extra (estilo profesor)</h3>
+<details><summary>Una tabla <code>logs</code> de 80 M filas se consulta con <code>where nivel='ERROR'</code> (5 valores posibles) y <code>where fecha between ...</code>. ¿Qué índice crearías? <span class="tag new">extra</span></summary>
+<div class="ans">BTREE sobre <code>fecha</code> (rangos, alta cardinalidad). Si siempre se filtran juntos: compuesto <code>(nivel, fecha)</code> — igualdad primero, rango después. Un índice solo por <code>nivel</code> tiene baja selectividad.</div></details>
+<details><summary>¿Qué consultas usan el índice <code>idx(last_name, first_name)</code>? <span class="tag new">extra</span></summary>
+<pre>a) where last_name = 'GOMEZ'                          <span class="good">✔ usa</span>
+b) where last_name = 'GOMEZ' and first_name = 'SELENA' <span class="good">✔ usa</span>
+c) where first_name = 'SELENA'                        <span class="badc">✘ no (falta el nivel 1)</span>
+d) where last_name like 'GO%'                         <span class="good">✔ usa (rango)</span>
+e) where last_name like '%EZ'                         <span class="badc">✘ no (comodín al inicio)</span>
+f) where upper(last_name) = 'GOMEZ'                   <span class="badc">✘ no (función sobre la columna)</span></pre></details>
+<details><summary>Se necesita buscar "camiseta roja algodón" dentro de descripciones de 2.000 caracteres. ¿Qué índice? <span class="tag new">extra</span></summary>
+<div class="ans"><b>FULLTEXT</b> (índice invertido): <code>create fulltext index idx_prod_desc on productos(descripcion);</code> y consultar con <code>match(descripcion) against('camiseta roja algodón')</code>. <code>like '%roja%'</code> haría full scan.</div></details>
+<details><summary>Verdadero o falso: "Entre más índices tenga una tabla, más rápida es". <span class="tag new">extra</span></summary>
+<div class="ans"><b>Falso.</b> Las lecturas pueden mejorar, pero cada insert/update/delete debe actualizar (y rebalancear) cada árbol. Índices innecesarios o duplicados solo cuestan.</div></details>
+<details><summary>¿Qué diferencia a UNIQUE de PRIMARY KEY? <span class="tag new">extra</span></summary>
+<div class="ans">Ambos impiden duplicados, pero <b>UNIQUE permite NULL</b> y puede haber varios por tabla; la PK no admite NULL y hay solo una.</div></details>
+</section>
+
+<!-- ======================= 16 PLAN DE EJECUCION ======================= -->
+<section class="topic" id="plan">
+<h2><small>Clase 16</small>Optimización y planes de ejecución</h2>
+
+<div class="card def"><strong>Plan de ejecución:</strong> el "paso a paso" que el DBMS sigue para ejecutar una sentencia SQL. Analogía: Waze busca la ruta más óptima; el plan de ejecución muestra la ruta actual para ver qué se puede mejorar.</div>
+<p>Todas las cláusulas consumen CPU y memoria: <code>select</code> (mostrar), <code>from</code> (buscar), <code>join</code> (relacionar), <code>where</code> (filtrar), <code>group by</code> (agrupar), <code>having</code> (filtrar tras agrupar), <code>order by</code> (ordenar). <b>Una consulta lenta puede tumbar todo el sistema.</b></p>
+
+<h3>Ejemplo 1: ¿cuál es más eficiente?</h3>
+<table>
+<tr><th></th><th><code>select * from cities where country_id='COL'</code></th><th><code>select name,district,population from cities where country_id='COL'</code></th><th><code>select * from cities</code></th></tr>
+<tr><td>Bytes respuesta</td><td>😐</td><td>😀</td><td>😩</td></tr>
+<tr><td>Escaneo de datos</td><td>😀</td><td>😀</td><td>😩</td></tr>
+<tr><td>Procesamiento</td><td>😀</td><td>😀</td><td>😕</td></tr>
+<tr><td>Trae</td><td>Más de lo necesario</td><td class="good">Solo lo necesario (la mejor)</td><td class="badc">Más de lo necesario (cómodo pero muy costoso)</td></tr>
+</table>
+
+<h3>EXPLAIN vs ANALYZE</h3>
+<div class="two">
+<div class="card def"><strong>EXPLAIN</strong> — dice lo que el DBMS <b>"cree"</b> que va a pasar. <b>No ejecuta</b> la sentencia; usa estadísticas internas. Ideal para consultas pesadas que podrían tumbar el sistema.</div>
+<div class="card def"><strong>ANALYZE</strong> — dice lo que <b>realmente pasó</b>. <b>Sí ejecuta</b> la sentencia y muestra columnas extra <code>r_rows</code>, <code>r_filtered</code> (valores reales).</div>
+</div>
+<p>EXPLAIN informa: tablas involucradas, tipo de escaneo (índice o full scan), filas estimadas por tabla, uso de joins, etc.</p>
+
+<h4>Cómo leer las columnas de EXPLAIN</h4>
+<table>
+<tr><th>Columna</th><th>Significado</th></tr>
+<tr><td><code>table</code></td><td>Tabla que se lee en ese paso (el orden de las filas = orden del join)</td></tr>
+<tr><td><code>type</code></td><td>Método de acceso. De mejor a peor: <b>const</b> (1 fila por PK/unique) → <b>eq_ref</b> → <b>ref</b> (índice no único) → <b>range</b> (rango en índice) → <b>index</b> (recorre todo el índice) → <b>ALL</b> (<span class="badc">full scan</span>)</td></tr>
+<tr><td><code>possible_keys</code></td><td>Índices que podría usar</td></tr>
+<tr><td><code>key</code></td><td>Índice que realmente eligió (NULL = ninguno)</td></tr>
+<tr><td><code>key_len</code></td><td>Bytes del índice usados</td></tr>
+<tr><td><code>ref</code></td><td>Con qué se compara el índice (<code>const</code>, otra columna...)</td></tr>
+<tr><td><code>rows</code></td><td>Filas estimadas a recorrer (¡clave!)</td></tr>
+<tr><td><code>Extra</code></td><td><i>Using where</i>, <i>Using index</i> (cubriente), <i>Using index condition</i>, <i>Using filesort</i> (ordenamiento extra), <i>Using temporary</i>, <i>Impossible WHERE</i></td></tr>
+</table>
+
+<h4>Ejemplos de las diapositivas (BD world)</h4>
+<pre><span class="c">-- Ej 2: full scan vs índice</span>
+explain select * from city where Name = 'Medellin';
+<span class="c">-- type=ALL, key=NULL, rows≈4000  ← full scan</span>
+explain select * from city where CountryCode = 'COL';
+<span class="c">-- type=ref, key=CountryCode, rows=38  ← usa índice</span>
+
+<span class="c">-- Ej 3: join entre 2 tablas</span>
+explain select * from city, country
+where city.CountryCode = country.Code and country.Code = 'COL';
+| table   | type  | key         | ref   | rows | Extra                 |
+| country | const | PRIMARY     | const | 1    |                       |
+| city    | ref   | CountryCode | const | 38   | Using index condition |
+
+<span class="c">-- Ej 4: join de 3 tablas SIN condición sobre country</span>
+explain select * from city, country, countrylanguage
+where city.CountryCode = country.Code
+and countrylanguage.CountryCode = country.Code;
+| country         | ALL | NULL        | 239 |   ← full scan de country
+| city            | ref | CountryCode | 1   |
+| countrylanguage | ref | PRIMARY     | 1   |
+<span class="c">-- con "and country.Code='COL'": country=const(1), countrylanguage=ref(5), city=ref(38)</span>
+
+<span class="c">-- Ej 5: join + condiciones</span>
+explain select city.Name, country.Name from city, country
+where city.CountryCode = country.Code and country.Code='COL' and city.Name is not null;
+<span class="c">-- city: ref, 38 filas, Extra: Using index condition; Using where</span>
+
+<span class="c">-- Ej 6: condición que no se cumple</span>
+explain select ... where country.Code = 'XXX';
+<span class="c">-- Extra: "Impossible WHERE noticed after reading const tables" (ni siquiera lee)</span>
+
+<span class="c">-- Ej 7: formato JSON (muestra además "cost")</span>
+explain format=json select * from city where city.CountryCode = 'COL';
+
+<span class="c">-- ANALYZE: ejecuta de verdad</span>
+analyze select * from city, country
+where city.CountryCode = country.Code and country.Code = 'COL';
+<span class="c">-- añade r_rows (filas reales) y r_filtered</span></pre>
+
+<h3>Qué buscar en un plan</h3>
+<ol><li>¿Usa índice o hace <b>full scan</b>?</li><li>¿Cuántas filas se estiman?</li><li>¿Hay joins? ¿En qué orden?</li></ol>
+
+<h3>Niveles de optimización</h3>
+<table>
+<tr><th>Nivel</th><th>Preguntas</th></tr>
+<tr><td><b>Diseño y desarrollo</b></td><td>¿Tipos de datos correctos? ¿Manejo de bloqueos/concurrencia? ¿Hay <code>%like%</code> realmente necesarios? ¿<code>order by</code> necesario? <b>¿Se aplica una función a un campo?</b></td></tr>
+<tr><td><b>Configuración de la BD</b></td><td>¿Mínimo privilegio? ¿Límites de ejecución? ¿Bloqueos/concurrencia? ¿Los índices creados son los que deberían?</td></tr>
+<tr><td><b>Hardware</b></td><td>¿Ancho de banda? ¿Switches de red? ¿Réplicas de lectura? ¿Estado y velocidad del almacenamiento? ¿Más CPU/RAM? → <b>crecimiento vertical</b></td></tr>
+</table>
+
+<h3 id="plan-ej">Ejercicios de clase resueltos (BD world)</h3>
+<div class="card key"><strong>Patrón clave del profesor:</strong> aplicar una función (<code>upper</code>, <code>cast</code>, <code>concat</code>, <code>year</code>, <code>date</code>…) sobre una columna indexada en el <code>where</code> obliga al DBMS a calcularla en cada fila → <b>full scan</b>. Solución: dejar la columna "limpia" y transformar el valor constante.</div>
+
+<details><summary>Ej. 1 – <code>where upper(Code) = 'AFG'</code> <span class="tag slide">diapositiva</span></summary>
+<pre><span class="c">-- Mal: type=ALL (la función anula el índice PRIMARY)</span>
+select * from countries where upper(Code) = 'AFG';
+<span class="c">-- Bien: type=const, rows=1</span>
+select * from countries where Code = 'AFG';</pre>
+<div class="ans">El collation por defecto (<code>_ci</code>) ya es insensible a mayúsculas, así que <code>upper()</code> sobra. Si hiciera falta, se normaliza el dato al insertar, no al consultar.</div></details>
+
+<details><summary>Ej. 2 – <code>where cast(independence_year as integer) &gt; 1980</code> <span class="tag slide">diapositiva</span></summary>
+<pre>select code, name, independence_year
+from   countries
+where  independence_year &gt; 1980;
+create index idx_coun_inye on countries(independence_year);  <span class="c">-- type=range</span></pre>
+<div class="ans">El campo ya es numérico; el <code>cast</code> no aporta nada y bloquea el índice. Si el campo fuera texto, la solución real es <b>corregir el tipo de dato</b> de la columna (optimización a nivel de diseño).</div></details>
+
+<details><summary>Ej. 3 – <code>where concat(continent,'-',region) = 'North America-Caribbean'</code> <span class="tag slide">diapositiva</span></summary>
+<pre>select * from countries
+where continent = 'North America' and region = 'Caribbean';
+create index idx_coun_cont_regi on countries(continent, region);</pre></details>
+
+<details><summary>Ej. 4 – <code>where surface_area &gt; 5000000</code> <span class="tag slide">diapositiva</span></summary>
+<pre>create index idx_coun_suar on countries(surface_area) using btree;
+<span class="c">-- antes: type=ALL ~239 filas; después: type=range, pocas filas</span></pre>
+<div class="ans">La consulta está bien escrita; lo que falta es un índice <b>BTREE</b> (rango → no sirve HASH). Además, cambiar <code>*</code> por las columnas necesarias. Como la tabla es pequeña (239), la ganancia real es mínima: es la discusión "revista de 10 páginas".</div></details>
+
+<details><summary>Ej. 5 – Plan con y sin índice de los ejercicios de la clase anterior <span class="tag slide">diapositiva</span></summary>
+<div class="ans">Correr <code>explain</code> antes y después de crear cada índice del Ej. 5-6 de índices. Debes ver: <code>type</code> pasa de <code>ALL</code> a <code>ref</code>/<code>range</code>, <code>key</code> pasa de NULL al nombre del índice, <code>rows</code> baja de ~15 M a una fracción, y en el <code>count(*)</code> aparece <i>Using index</i> (índice cubriente).</div></details>
+
+<details><summary>Ej. 6 – <code>where country_id='COL' order by name, population</code> <span class="tag slide">diapositiva</span></summary>
+<pre>select name, district, population      <span class="c">-- no *</span>
+from   cities
+where  country_id = 'COL'
+order by name, population;
+create index idx_citi_coid_name_popu on cities(country_id, name, population);</pre>
+<div class="ans">Sin el índice compuesto, EXPLAIN muestra <i>Using filesort</i> (ordenamiento extra). Con <code>(country_id, name, population)</code> las filas ya salen ordenadas del índice. Y preguntarse: ¿el <code>order by</code> es realmente necesario?</div></details>
+
+<details><summary>Ej. 7 – group by / having / order by en countries_languages <span class="tag slide">diapositiva</span></summary>
+<pre><span class="c">-- Original: errores lógicos</span>
+select id, count(language_id) as total_languages   <span class="c">-- "id" no está en el group by</span>
+from countries_languages
+group by country_id
+having count(language_id) &gt; 0                      <span class="c">-- siempre se cumple: sobra</span>
+order by count(language_id) desc;
+
+<span class="c">-- Mejorada</span>
+select   country_id, count(*) as total_languages
+from     countries_languages
+group by country_id
+order by total_languages desc;</pre>
+<div class="ans">Problemas: (1) selecciona <code>id</code> pero agrupa por <code>country_id</code> (resultado indeterminado); (2) el <code>having &gt; 0</code> es inútil porque todo grupo tiene al menos 1 fila; (3) recalcula el count en el order by; usar el alias. Un índice en <code>country_id</code> permite agrupar sin tabla temporal.</div></details>
+
+<details><summary>Ej. 8 – <code>where id = 'COL' or id = 'USA'</code> <span class="tag slide">diapositiva</span></summary>
+<pre>select * from countries where id in ('COL','USA');</pre>
+<div class="ans">Funcionalmente igual; <code>IN</code> es más legible y el optimizador lo resuelve como <code>range</code> sobre la PK (2 filas). Los <code>OR</code> sobre columnas <b>distintas</b> son los que suelen romper el uso de índices. Y de nuevo: evitar <code>*</code>.</div></details>
+
+<h3 id="plan-extra">Práctica extra (estilo profesor)</h3>
+<details><summary><code>select * from compras where year(fecha) = 2023;</code> — ¿cómo mejorarla? <span class="tag new">extra</span></summary>
+<pre>select id, total from compras
+where fecha &gt;= '2023-01-01' and fecha &lt; '2024-01-01';   <span class="c">-- + índice btree en fecha</span></pre></details>
+<details><summary><code>select * from clientes where substring(documento,1,3) = '100';</code> <span class="tag new">extra</span></summary>
+<pre>select ... from clientes where documento like '100%';   <span class="c">-- prefijo: sí usa índice</span></pre></details>
+<details><summary><code>select * from productos where precio * 1.19 &gt; 119000;</code> <span class="tag new">extra</span></summary>
+<pre>select ... from productos where precio &gt; 100000;   <span class="c">-- se despeja la constante</span></pre></details>
+<details><summary><code>select * from usuarios where lower(email) like '%@gmail.com';</code> <span class="tag new">extra</span></summary>
+<div class="ans">Dos problemas: función sobre la columna y comodín al inicio. Ninguna versión con <code>%...</code> al inicio usa índice. Opciones: guardar el dominio en una columna aparte (<code>email_dominio</code>) indexada, o normalizar a minúsculas al insertar.</div></details>
+<details><summary>Un EXPLAIN muestra <code>type=ALL, rows=12000000, key=NULL</code>. ¿Qué significa y qué haces? <span class="tag new">extra</span></summary>
+<div class="ans">Full scan de 12 M filas sin índice. Revisar: ¿hay índice sobre la columna del where? ¿se le aplica una función? ¿hay <code>like '%x'</code>? ¿la condición tiene buena selectividad? Crear el índice correcto y validar con EXPLAIN que pase a <code>ref</code>/<code>range</code>.</div></details>
+<details><summary>¿Por qué usarías EXPLAIN y no ANALYZE en producción para un DELETE masivo? <span class="tag new">extra</span></summary>
+<div class="ans">Porque <b>ANALYZE ejecuta la sentencia</b>: borraría los datos de verdad y podría bloquear tablas. EXPLAIN solo estima.</div></details>
+</section>
+
+<!-- ======================= 17 MOTORES ======================= -->
+<section class="topic" id="motores">
+<h2><small>Clase 17</small>Motores de almacenamiento</h2>
+<div class="card def"><strong>Motor de almacenamiento:</strong> componentes que gestionan cómo se guardan los datos y cómo se accede a ellos. Dos tablas iguales pueden comportarse distinto solo por tener motores diferentes.<br><b>Analogía:</b> los motores son a las tablas lo que los sistemas de archivos (FAT32, ext4, NTFS) son a un disco.</div>
+
+<h3>Motores estándar</h3>
+<table>
+<tr><th>Motor</th><th>Uso</th><th>Observaciones</th></tr>
+<tr><td><b>InnoDB</b></td><td>Transaccional</td><td><b>Por defecto</b> en MariaDB y MySQL. Buen manejo de concurrencia.</td></tr>
+<tr><td><b>MyISAM</b></td><td>No transaccional</td><td>Clásico de MySQL. Optimizado para lecturas, no para concurrencia.</td></tr>
+<tr><td><b>Memory</b></td><td>No transaccional</td><td>Extremadamente rápido. Datos temporales, caché, pequeños. Se pierde al reiniciar.</td></tr>
+<tr><td><b>CSV</b></td><td>No transaccional</td><td>No recomendado para el día a día. <b>No soporta campos opcionales</b> (todo NOT NULL).</td></tr>
+</table>
+<h3>Alternos y solo MariaDB</h3>
+<table>
+<tr><th>Motor</th><th>Uso</th><th>Observaciones</th></tr>
+<tr><td>mrg_myisam</td><td>No transaccional</td><td>Ver varias tablas MyISAM idénticas como una sola</td></tr>
+<tr><td>blackhole</td><td>Solo pruebas</td><td>Solo estructura. <b>No guarda datos</b></td></tr>
+<tr><td>archive</td><td>Archivado</td><td>Datos de poco uso; ahorra espacio, sacrifica CPU</td></tr>
+<tr><td>aria*</td><td>No transaccional</td><td>Evolución de MyISAM</td></tr>
+<tr><td>federatedX*</td><td>Acceso remoto</td><td>BD MariaDB/MySQL remotas</td></tr>
+<tr><td>connect*</td><td>Acceso externo</td><td>ini, csv, xml, json, odbc, jdbc, algunas NoSQL</td></tr>
+<tr><td>spider*</td><td>Acceso remoto</td><td>Ver una tabla remota como si fuera local</td></tr>
+<tr><td>sequence*</td><td>Datos de prueba</td><td>Genera secuencias sin crear tablas</td></tr>
+</table>
+<p class="c">* Solo MariaDB.</p>
+
+<h3>Comparación de los más relevantes</h3>
+<table>
+<tr><th>Motor</th><th>Lectura</th><th>Escritura</th><th>Transacciones</th><th>Bloqueo</th><th>Tolerancia a fallos</th></tr>
+<tr><td>MyISAM</td><td>Rápida</td><td>Lenta</td><td>❌</td><td>Tabla completa</td><td>Baja (sistemas legados)</td></tr>
+<tr><td>Aria</td><td>Muy rápida</td><td>Muy lenta</td><td>❌</td><td>Tabla parcial</td><td>Mejor que MyISAM</td></tr>
+<tr><td><b>InnoDB</b></td><td>Rápida</td><td>Rápida</td><td>✅</td><td><b>Por registro</b></td><td>Buena — el más usado</td></tr>
+</table>
+
+<h3>¿Cuál elegir?</h3>
+<p><b>Respuesta corta: depende de la necesidad</b> (transaccionalidad, lecturas vs escrituras, crecimiento, medio físico, número de usuarios…).</p>
+<table>
+<tr><th>Necesidad</th><th>Motor</th></tr>
+<tr><td>Tablas transaccionales</td><td>InnoDB</td></tr>
+<tr><td>Lectura intensiva, poca escritura</td><td>Aria* o MyISAM</td></tr>
+<tr><td>Caché o datos temporales pequeños</td><td>Memory</td></tr>
+<tr><td>Ahorro de espacio, datos archivados</td><td>Archive</td></tr>
+<tr><td>Conexión a fuentes externas</td><td>Connect*</td></tr>
+<tr><td><b>No hay datos para decidir</b></td><td><b>InnoDB</b></td></tr>
+</table>
+<ul>
+<li><b>Mito:</b> un SSD siempre mejora el rendimiento. <b>Realidad:</b> un SSD mal aprovechado sigue siendo lento y no soluciona problemas de diseño.</li>
+<li>La latencia de red importa si se usan motores que se conectan a BD externas.</li>
+<li>La memoria no es infinita: Memory es rapidísimo… hasta que colapsa.</li>
+<li>Connect/federated/spider: usarlos solo si es estrictamente necesario; conectar capas de datos directamente no es buena arquitectura (acoplamiento, seguridad, latencia, puntos de falla, saltarse la lógica de negocio del backend).</li>
+<li>Sistemas tradicionales: InnoDB + Aria (MariaDB) · InnoDB + MyISAM (MySQL) · o solo InnoDB.</li>
+</ul>
+
+<h3>Archivos por motor</h3>
+<table>
+<tr><th>Motor</th><th>Archivos</th></tr>
+<tr><td>InnoDB</td><td>.frm (estructura), <b>.ibd</b> (datos)</td></tr>
+<tr><td>MyISAM</td><td>.frm, <b>.MYD</b> (datos), <b>.MYI</b> (índices)</td></tr>
+<tr><td>Memory</td><td>.frm solamente (datos en RAM)</td></tr>
+<tr><td>CSV</td><td>.frm, .CSV (datos), .CSM (metadatos)</td></tr>
+<tr><td>mrg_myisam</td><td>.frm, .MRG (metadatos)</td></tr>
+<tr><td>blackhole</td><td>.sdi (estructura)</td></tr>
+<tr><td>archive</td><td>.sdi, .ARZ (datos)</td></tr>
+<tr><td>aria</td><td>.frm, <b>.MAD</b> (datos), <b>.MAI</b> (índices)</td></tr>
+<tr><td>federatedX</td><td>.frm</td></tr>
+<tr><td>connect</td><td>Depende de los archivos externos</td></tr>
+<tr><td>sequence</td><td>Ninguno</td></tr>
+</table>
+<p>Rutas por defecto: Windows <code>C:/Program Files/MariaDB 10.X/data</code> · Linux/Mac <code>/var/lib/mysql/</code>. Clave para diagnosticar errores y hacer respaldos.</p>
+
+<h3>Motor SEQUENCE y generación de datos</h3>
+<table>
+<tr><th>Tabla virtual</th><th>Resultado</th></tr>
+<tr><td><code>seq_1_to_10</code></td><td>1, 2, …, 10</td></tr>
+<tr><td><code>seq_1_to_10_step_2</code></td><td>1, 3, 5, 7, 9</td></tr>
+<tr><td><code>seq_5_to_1</code></td><td>5, 4, 3, 2, 1</td></tr>
+<tr><td><code>seq_10_to_1_step_3</code></td><td>10, 7, 4, 1</td></tr>
+</table>
+<pre><span class="c">-- El tipo es BIGINT UNSIGNED: no puede dar negativos</span>
+select seq - 10 from seq_1_to_5;
+<span class="c">-- ERROR 1690: BIGINT UNSIGNED value is out of range</span>
+select cast(seq as int) - 10 as value from seq_9_to_0;    <span class="c">-- -1 ... -10 ✔</span>
+
+<span class="c">-- CAST</span>
+select cast('123' as int);                <span class="c">-- varchar → entero: 123</span>
+select cast(-1 as unsigned int);          <span class="c">-- 18446744073709551615 (con warning)</span>
+
+<span class="c">-- Fechas consecutivas</span>
+select date_add('2030-01-10', interval seq day) as value from seq_0_to_40;
+
+<span class="c">-- Temperaturas aleatorias 15–25 °C para febrero de 2045</span>
+select date_add('2045-02-01', interval seq day) as my_date,
+       round((15 + rand()*10), 1) as temperature
+from   seq_0_to_27;
+
+<span class="c">-- Igual + texto aleatorio de 32 caracteres</span>
+select date_add('2045-02-01', interval seq day) as my_date,
+       round((15 + rand()*10), 1) as temperature,
+       md5(uuid()) as some_text
+from   seq_0_to_27;
+
+<span class="c">-- Motores disponibles / especificar motor</span>
+show engines;
+create table table1(id int) engine Aria;
+create table table5(id int) engine CSV;
+<span class="c">-- ERROR 1178: The storage engine for the table doesn't support nullable columns</span>
+create table table5(id int not null) engine CSV;   <span class="c">-- ✔</span></pre>
+<div class="card key"><strong>Fórmula de aleatorio en rango:</strong> <code>min + rand() * (max - min)</code>. <code>rand()</code> da [0,1). Entero: <code>floor(min + rand()*(max-min+1))</code>.</div>
+
+<h3 id="mot-ej">Ejercicios de clase resueltos</h3>
+<details><summary>Ej. 1 – Crear las 6 tablas <span class="tag slide">diapositiva</span></summary>
+<pre>create database gd_motores; use gd_motores;
+<span class="c">-- Nota: el Ej. 2 pide my_value_type, así que se agrega aquí.</span>
+create table t_innodb (
+  my_id          int(11) not null,
+  my_date        date    not null,
+  my_value       real,
+  my_value_type  enum('ODD','EVEN'),
+  my_description varchar(50)
+) engine = InnoDB;
+create table t_aria      like t_innodb;  alter table t_aria      engine = Aria;
+create table t_myisam    like t_innodb;  alter table t_myisam    engine = MyISAM;
+create table t_memory    like t_innodb;  alter table t_memory    engine = Memory;
+create table t_blackhole like t_innodb;  alter table t_blackhole engine = BLACKHOLE;
+<span class="c">-- CSV: todas las columnas deben ser NOT NULL (y no admite índices)</span>
+create table t_csv (
+  my_id int(11) not null, my_date date not null, my_value real not null,
+  my_value_type enum('ODD','EVEN') not null, my_description varchar(50) not null
+) engine = CSV;</pre></details>
+
+<details><summary>Ej. 2 – Procedimiento <code>pr_fill(p_table_name, p_records)</code> <span class="tag slide">diapositiva</span></summary>
+<pre>delimiter //
+create procedure pr_fill(in p_table_name varchar(30), in p_records bigint unsigned)
+begin
+  declare i bigint unsigned default 1;
+  declare v_value real;
+
+  <span class="c">-- nombre de tabla dinámico → SQL dinámico</span>
+  set @sql = concat('insert into ', p_table_name,
+                    ' (my_id, my_date, my_value, my_value_type, my_description)',
+                    ' values (?, ?, ?, ?, ?)');
+  prepare stmt from @sql;
+
+  while i &lt;= p_records do
+    set v_value = floor(rand() * 10000);                            <span class="c">-- 0..9999</span>
+    set @p_id   = i;
+    set @p_date = date_add('2000-01-01',
+                  interval floor(rand() * datediff('2050-12-31','2000-01-01')) day);
+    set @p_val  = v_value;
+    set @p_type = if(mod(v_value, 2) = 0, 'EVEN', 'ODD');
+    set @p_desc = md5(uuid());                                      <span class="c">-- 32 caracteres</span>
+    execute stmt using @p_id, @p_date, @p_val, @p_type, @p_desc;
+    set i = i + 1;
+  end while;
+
+  deallocate prepare stmt;
+end //
+delimiter ;
+
+<span class="c">-- Versión alternativa en UNA sola sentencia con el motor sequence (mucho más rápida)</span>
+delimiter //
+create procedure pr_fill_seq(in p_table_name varchar(30), in p_records bigint unsigned)
+begin
+  set @sql = concat(
+    'insert into ', p_table_name,
+    ' select seq, date_add(''2000-01-01'', interval floor(rand()*18627) day), v,',
+    ' if(mod(v,2)=0,''EVEN'',''ODD''), md5(uuid())',
+    ' from (select seq, floor(rand()*10000) v from seq_1_to_', p_records, ') s');
+  prepare stmt from @sql; execute stmt; deallocate prepare stmt;
+end //
+delimiter ;
+
+<span class="c">-- Uso (¡dentro de una transacción!)</span>
+start transaction;
+call pr_fill('t_innodb', 10);
+commit;</pre>
+<div class="ans">Puntos que el profesor revisa: SQL dinámico con <code>prepare/execute</code> (no se puede usar una variable como nombre de tabla directamente), <code>my_value_type</code> calculado a partir de <code>my_value</code> con <code>mod</code>, texto de 32 caracteres con <code>md5(uuid())</code>, y transacción alrededor de la llamada.</div></details>
+
+<details><summary>Ej. 3 – Procedimiento <code>pr_clear(p_table_name, out p_records)</code> <span class="tag slide">diapositiva</span></summary>
+<pre>delimiter //
+create procedure pr_clear(in p_table_name varchar(30), out p_records bigint unsigned)
+begin
+  set @sql = concat('delete from ', p_table_name);
+  prepare stmt from @sql;
+  execute stmt;
+  set p_records = row_count();     <span class="c">-- filas afectadas por el último DML</span>
+  deallocate prepare stmt;
+end //
+delimiter ;
+
+start transaction;
+call pr_clear('t_innodb', @borrados);
+commit;
+select @borrados;</pre>
+<div class="ans">Se usa <code>delete</code> y no <code>truncate</code> porque <code>truncate</code> no informa filas afectadas (y es DDL: hace commit implícito).</div></details>
+
+<details><summary>Ej. 4–7 – Medición de tiempos <span class="tag slide">diapositiva</span></summary>
+<pre>start transaction; call pr_fill('t_aria', 1000); commit;   <span class="c">-- repetir por tabla y por tamaño</span>
+select count(*) from t_aria where my_id between 140000 and 160000;
+select count(*) from t_aria where my_value_type = 'ODD';
+select count(*) from t_aria where my_value_type = 'EVEN';</pre>
+<div class="ans">Nota: la diapositiva escribe <code>where id between…</code>, pero la columna se llama <code>my_id</code>.</div></details>
+
+<details><summary>Ej. 8 – Conclusiones esperadas <span class="tag slide">diapositiva</span></summary>
+<div class="ans"><ul>
+<li><b>Más rápido para insertar:</b> blackhole (no guarda nada), luego Memory (RAM). Entre los que persisten, MyISAM/Aria suelen ganar en inserción masiva sin concurrencia; InnoDB rinde bien <b>si se usa una transacción</b> (sin ella hace commit por cada fila → horas).</li>
+<li><b>Más rápido para borrar:</b> blackhole (0 filas), luego Memory.</li>
+<li><b>Más rápido para consultar:</b> Memory; luego Aria/MyISAM (optimizados para lectura). CSV es el más lento (sin índices, texto plano). Sin índices todos hacen full scan.</li>
+<li><b>Error de Memory con muchos registros:</b> <code>The table 't_memory' is full</code> — la tabla supera <code>max_heap_table_size</code> (por defecto 16 MB). La RAM no es infinita.</li>
+<li><b>Blackhole:</b> tiempos ~0 y <code>count(*)</code> = 0 porque descarta todo lo que se inserta; solo existe la estructura.</li>
+</ul></div></details>
+
+<h3 id="mot-extra">Práctica extra (estilo profesor)</h3>
+<details><summary>¿Qué motor para: (a) carrito de compras con pagos, (b) catálogo que se actualiza 1 vez al mes y se lee millones de veces, (c) sesiones temporales de usuarios, (d) logs de 2015 que casi nunca se consultan? <span class="tag new">extra</span></summary>
+<div class="ans">(a) <b>InnoDB</b> (transacciones, bloqueo por registro). (b) <b>Aria/MyISAM</b> (lectura intensiva) — aunque InnoDB también sería válido. (c) <b>Memory</b> (pequeño, temporal). (d) <b>Archive</b> (ahorra espacio).</div></details>
+<details><summary>Generar con SQL 100 registros de prueba de ventas: fecha entre 2024-01-01 y 2024-12-31, valor entero entre 1.000 y 50.000, y un código aleatorio. <span class="tag new">extra</span></summary>
+<pre>select seq as id,
+       date_add('2024-01-01', interval floor(rand()*366) day) as fecha,
+       floor(1000 + rand()*49001) as valor,
+       md5(uuid()) as codigo
+from   seq_1_to_100;</pre></details>
+<details><summary>Generar los números pares del 2 al 20 y los múltiplos de 5 de 50 a 0 (descendente). <span class="tag new">extra</span></summary>
+<pre>select seq from seq_2_to_20_step_2;
+select seq from seq_50_to_0_step_5;</pre></details>
+<details><summary>Generar la secuencia -5, -4, … , 5. <span class="tag new">extra</span></summary>
+<pre>select cast(seq as signed) - 5 as value from seq_0_to_10;</pre></details>
+<details><summary>Un compañero dice: "compremos SSD y se acaban los problemas de rendimiento". Responde. <span class="tag new">extra</span></summary>
+<div class="ans">Mito. Un SSD acelera E/S, pero no arregla full scans por falta de índices, funciones en el where, motores mal elegidos ni bloqueos. Primero diseño, luego hardware.</div></details>
+<details><summary>¿Qué archivos verías en <code>/var/lib/mysql/mi_bd/</code> para una tabla MyISAM llamada ventas? <span class="tag new">extra</span></summary>
+<div class="ans"><code>ventas.frm</code> (estructura), <code>ventas.MYD</code> (datos), <code>ventas.MYI</code> (índices).</div></details>
+</section>
+
+<!-- ======================= 18 PARTICIONAMIENTO ======================= -->
+<section class="topic" id="part">
+<h2><small>Clase 18</small>Particionamiento</h2>
+<div class="card def"><strong>Particionar:</strong> dividir una tabla en segmentos más pequeños (como un disco duro). A nivel <b>lógico</b> sigue siendo una sola tabla; a nivel <b>físico</b> son varios archivos separados.</div>
+<h3>¿Para qué?</h3>
+<ul>
+<li>Reducir lecturas/escrituras en tablas muy grandes (mejor velocidad).</li>
+<li>Menor probabilidad de pérdida de información si se daña un archivo.</li>
+<li>Facilita eliminar datos antiguos o archivados (<code>drop partition</code>).</li>
+<li><b>Mal usado no mejora… empeora</b> (igual que los índices).</li>
+</ul>
+<div class="card key"><strong>Lo importante no es memorizar los tipos, sino saber cuándo usar cuál.</strong> Procurar que el tipo de partición coincida con las búsquedas más frecuentes (minimiza lecturas en disco).</div>
+
+<h3>Tipos</h3>
+<table>
+<tr><th>Tipo</th><th>Cómo funciona</th><th>Cuándo usarlo</th></tr>
+<tr><td><b>RANGE</b></td><td>Expresión que retorna un valor; según el rango cae en una partición. Admite <code>maxvalue</code>.</td><td>Tiempos o fechas (históricos, auditorías, logs)</td></tr>
+<tr><td><b>LIST</b></td><td>Valores fijos por partición (el campo no tiene que ser ENUM)</td><td>Lista corta de categorías conocidas</td></tr>
+<tr><td><b>HASH</b></td><td>N particiones; <code>expresión % N</code> (expresión entera)</td><td>Distribución uniforme</td></tr>
+<tr><td><b>LINEAR HASH</b></td><td>Como hash, con potencias/logaritmos</td><td>Mejor si habrá que redistribuir particiones a futuro</td></tr>
+<tr><td><b>KEY</b></td><td>El DBMS calcula el hash internamente sobre uno o varios campos</td><td>Sin criterio claro / solo distribuir carga</td></tr>
+</table>
+
+<pre><span class="c">-- RANGE con maxvalue</span>
+create table singers(
+  id int not null, first_name varchar(50), last_name varchar(50),
+  birth_date date, gender enum('F','M','LGBTIQ+'),
+  primary key(id)
+)
+partition by range(year(birth_date)) (
+  partition p_2020 values less than (2020),
+  partition p_2022 values less than (2022),
+  partition p_2024 values less than (2024),
+  partition p_9999 values less than maxvalue
+);
+
+<span class="c">-- LIST</span>
+partition by list(gender) (
+  partition p_woman values in ('F'),
+  partition p_man   values in ('M'),
+  partition p_lgbtiq values in ('LGBTIQ+')
+);
+
+<span class="c">-- HASH</span>
+partition by hash(month(birth_date)) partitions 3;
+<span class="c">-- birth_date='1992-07-22' → month=7 → 7 % 3 = 1 → partición p1</span>
+
+<span class="c">-- LINEAR HASH / KEY</span>
+partition by linear hash(month(birth_date)) partitions 3;
+partition by linear key(first_name) partitions 3;</pre>
+<div class="card key"><strong>Cálculo HASH (pregunta típica):</strong> partición = <code>expresión MOD número_de_particiones</code>, numeradas desde p0. Ej.: <code>hash(month(fecha)) partitions 4</code> con fecha '2024-11-03' → 11 % 4 = 3 → <b>p3</b>.</div>
+
+<h3>Comandos</h3>
+<table>
+<tr><th>Caso</th><th>Comando</th></tr>
+<tr><td>Particionar tabla existente</td><td><code>alter table singers partition by range(year(birth_date)) (partition p_2020 values less than (2020), ...);</code></td></tr>
+<tr><td>Agregar particiones</td><td><code>alter table singers add partition (partition p_2027 values less than (2027));</code></td></tr>
+<tr><td>Reducir particiones (hash/key)</td><td><code>alter table singers coalesce partition 2;</code> → de 6 quedan 4</td></tr>
+<tr><td>Quitar particionamiento</td><td><code>alter table singers remove partitioning;</code></td></tr>
+<tr><td>Modificar rango</td><td><code>alter table singers reorganize partition p_2020 into (partition p_2020 values less than (2005));</code></td></tr>
+<tr><td>Eliminar una partición (<b>y sus datos</b>)</td><td><code>alter table singers drop partition p_2020;</code></td></tr>
+<tr><td>Partir una partición</td><td><code>alter table singers reorganize partition p_01 into (partition p_01_a values less than (2010), partition p_01_b values less than (2012));</code></td></tr>
+<tr><td>Unificar particiones</td><td><code>alter table singers reorganize partition p_01_a, p_01_b into (partition p_01 ...);</code></td></tr>
+</table>
+<div class="card key"><strong>Importante:</strong> máximo <b>1024</b> particiones por tabla en MariaDB (más particiones ≠ mejor rendimiento). Modificar particiones en una tabla grande en producción es <b>muy costoso</b> (bloqueos, concurrencia).</div>
+<div class="card def"><strong>Fórmula para un EXCELENTE rendimiento:</strong> índices óptimos + motores acordes a su función + particiones adecuadas + buen diseño backend/DBMS (concurrencia) + principio del mínimo privilegio + límites de ejecución por usuario.</div>
+
+<h3>Discusión grupal: ¿qué particionamiento usar (y cuál NO)?</h3>
+<details><summary>Respuesta sugerida <span class="tag slide">diapositiva</span></summary>
+<div class="ans"><table>
+<tr><th>Tabla</th><th>Usar</th><th>No usar</th></tr>
+<tr><td>Clientes</td><td>LIST por país (si se consulta por país) o KEY/HASH por id para distribuir carga. Muchas veces: <b>no particionar</b> (no es tan grande).</td><td>RANGE (no hay dimensión temporal natural); LIST por género (poco útil).</td></tr>
+<tr><td>Históricos de inventario (trigger)</td><td><b>RANGE por fecha</b> (año/mes): consultas por periodo y borrar lo viejo con <code>drop partition</code>.</td><td>HASH/KEY (desordena lo temporal).</td></tr>
+<tr><td>Inventario</td><td>Normalmente no particionar; si es enorme, LIST por bodega/sede.</td><td>RANGE por fecha.</td></tr>
+<tr><td>Torniquetes</td><td><b>RANGE por fecha/hora</b> (mes o día).</td><td>LIST por persona.</td></tr>
+<tr><td>Tienda de ropa</td><td>Pedidos: RANGE por fecha. Productos: LIST por categoría si se consulta así.</td><td>Particionar tablas pequeñas (catálogo de tallas, etc.).</td></tr>
+</table></div></details>
+
+<h3 id="part-ej">Ejercicios de clase resueltos</h3>
+<details><summary>Ej. 1 – Particionar las 6 tablas <span class="tag slide">diapositiva</span></summary>
+<pre>alter table t_aria partition by range(year(my_date)) (
+  partition p_2010 values less than (2010),
+  partition p_2020 values less than (2020),
+  partition p_2030 values less than (2030),
+  partition p_max  values less than maxvalue
+);
+
+<span class="c">-- my_value es REAL: RANGE exige expresión ENTERA → error esperado</span>
+alter table t_myisam partition by range(my_value) (
+  partition p_5000 values less than (5000),
+  partition p_10000 values less than (10000)
+);
+<span class="c">-- Solución: cambiar el tipo (los valores generados son enteros 0..9999)</span>
+alter table t_myisam modify my_value int;
+<span class="c">-- y repetir el alter de arriba</span>
+
+<span class="c">-- LIST sobre un texto/enum: usar LIST COLUMNS</span>
+alter table t_innodb partition by list columns(my_value_type) (
+  partition p_odd  values in ('ODD'),
+  partition p_even values in ('EVEN')
+);
+<span class="c">-- repetir para t_memory, t_csv, t_blackhole</span></pre>
+<div class="ans"><b>Errores esperados (discusión grupal):</b> <code>t_csv</code> falla: el motor CSV <b>no soporta particionamiento</b> (tampoco MERGE ni FEDERATED). <code>t_myisam</code> falla si <code>my_value</code> es REAL, porque las funciones de partición RANGE/LIST/HASH deben devolver entero. <code>list(my_value_type)</code> sin <code>columns</code> falla por no ser entero.</div></details>
+
+<details><summary>Ej. 2 y 6 – Archivos generados <span class="tag slide">diapositiva</span></summary>
+<div class="ans">Tras particionar, cada partición tiene sus propios archivos de datos, con el patrón <code>tabla#P#particion</code>:
+<ul>
+<li>InnoDB: <code>t_innodb#P#p_odd.ibd</code>, <code>t_innodb#P#p_even.ibd</code></li>
+<li>MyISAM: <code>.MYD</code> + <code>.MYI</code> por partición</li>
+<li>Aria: <code>.MAD</code> + <code>.MAI</code> por partición (4 pares en t_aria)</li>
+<li>Memory/Blackhole: no generan archivos de datos (solo cambia la definición)</li>
+<li>Puede aparecer un <code>.par</code> con la definición de particiones (versiones antiguas)</li>
+</ul>
+Al hacer <code>remove partitioning</code> vuelven a un único archivo de datos. La suma del tamaño de las particiones suele ser algo mayor que el original (overhead por archivo).</div></details>
+
+<details><summary>Ej. 3–4 – ODD/EVEN y rango de id, con particiones <span class="tag slide">diapositiva</span></summary>
+<div class="ans">La consulta por <code>my_value_type</code> en tablas particionadas por LIST de ese mismo campo mejora: el DBMS hace <b>partition pruning</b> (solo lee una partición; se ve en <code>explain partitions</code> / columna <code>partitions</code>). La consulta por <code>my_id between …</code> <b>no</b> mejora (puede empeorar), porque ninguna tabla está particionada por id: tiene que leer todas las particiones.</div></details>
+
+<details><summary>Ej. 5 – Contar, eliminar una partición, volver a contar <span class="tag slide">diapositiva</span></summary>
+<pre>select count(*) from t_aria;
+alter table t_aria drop partition p_2010;
+select count(*) from t_aria;   <span class="c">-- bajó: los datos de esa partición se borraron</span></pre>
+<div class="ans">Conclusión: <code>drop partition</code> elimina datos de forma casi instantánea (borra un archivo) — es la forma eficiente de purgar históricos, mucho más rápido que un <code>delete</code>.</div></details>
+
+<details><summary>Ej. 7 – Conclusiones <span class="tag slide">diapositiva</span></summary>
+<div class="ans"><ul>
+<li>Mejora solo cuando el filtro de la consulta coincide con el criterio de partición.</li>
+<li>CSV no soporta particionamiento.</li>
+<li>Las tablas que más rápido crean particiones son las sin datos reales (blackhole) o en RAM (memory).</li>
+<li>Particionar reescribe toda la tabla: en tablas grandes es costoso.</li>
+</ul></div></details>
+
+<h3 id="part-extra">Práctica extra (estilo profesor)</h3>
+<details><summary>Tabla <code>ventas</code> con <code>hash(day(fecha)) partitions 5</code>. ¿En qué partición cae una venta del 2025-03-17? <span class="tag new">extra</span></summary>
+<div class="ans">day = 17 → 17 % 5 = 2 → <b>p2</b>.</div></details>
+<details><summary>Escribe el particionamiento de <code>auditoria(id, accion, fecha)</code> por año 2022, 2023, 2024 y todo lo posterior. <span class="tag new">extra</span></summary>
+<pre>alter table auditoria partition by range(year(fecha)) (
+  partition p_2022 values less than (2023),
+  partition p_2023 values less than (2024),
+  partition p_2024 values less than (2025),
+  partition p_max  values less than maxvalue
+);</pre>
+<div class="ans">Ojo con <code>less than</code>: para que p_2022 contenga 2022 el límite es 2023. Si la tabla tiene PK, la columna de partición (<code>fecha</code>) debe hacer parte de la PK: <code>primary key(id, fecha)</code>.</div></details>
+<details><summary>Una tabla de pedidos se consulta casi siempre por <code>ciudad</code> (Medellín, Bogotá, Cali). ¿Qué tipo? <span class="tag new">extra</span></summary>
+<pre>partition by list columns(ciudad) (
+  partition p_med values in ('MEDELLIN'),
+  partition p_bog values in ('BOGOTA'),
+  partition p_cal values in ('CALI')
+);</pre></details>
+<details><summary>Se tiene <code>partition by key(id) partitions 8</code> y se quiere dejar en 5. <span class="tag new">extra</span></summary>
+<pre>alter table t coalesce partition 3;</pre></details>
+<details><summary>Hay que borrar todos los logs de 2019 (200 M filas). ¿delete o drop partition? <span class="tag new">extra</span></summary>
+<div class="ans"><code>alter table logs drop partition p_2019;</code> si está particionada por año: borra el archivo, es casi inmediato y no llena el log de transacciones. Un <code>delete</code> recorre, bloquea y registra 200 M filas.</div></details>
+</section>
+
+<!-- ======================= 19 EVENTOS ======================= -->
+<section class="topic" id="eventos">
+<h2><small>Clase 19</small>Eventos</h2>
+<div class="card def"><strong>Evento:</strong> sentencia SQL o PL/SQL programada para ejecutarse automáticamente: periódicamente, una única vez en un horario predefinido, o en un rango de tiempo. "Código SQL que se ejecuta de forma autónoma". Analogía: <b>crontab / tarea programada / job</b>.</div>
+
+<h3>Tipos — responde: ¿Cuándo? ¿Cada cuánto? ¿Hasta cuándo?</h3>
+<table>
+<tr><th>Tipo</th><th>Descripción</th><th>Ejemplo / caso de uso</th></tr>
+<tr><td><b>Periódico</b></td><td>Indefinido, intervalos de segundos a años</td><td>Depurar registros de más de 10 años · logs, métricas</td></tr>
+<tr><td><b>Única ejecución / programado</b></td><td>Una sola vez en un momento dado</td><td>A las 2:00 am de mañana limpiar datos · migraciones</td></tr>
+<tr><td><b>Rango de tiempo</b></td><td>Periódico entre <code>starts</code> y <code>ends</code></td><td>Aplicar descuentos diarios por un mes · campañas, promociones</td></tr>
+</table>
+
+<pre><span class="c">-- Requisito: activar el planificador (root o usuario con permisos)</span>
+SET GLOBAL event_scheduler = ON;      <span class="c">-- sin esto, los eventos "no existen"</span>
+
+<span class="c">-- Op 1: periódico indefinido</span>
+create event ev_periodic_event
+  on schedule every 1 day
+  on completion preserve            <span class="c">-- o "not preserve"</span>
+  do
+    update some_table set some_field = 'SOME_VALUE' where id &gt; 100;
+
+<span class="c">-- Op 2: única vez (3 horas después de crearlo)</span>
+create event ev_scheduled_event
+  on schedule at current_timestamp + interval 3 hour
+  on completion preserve
+  do
+    update some_table set some_field = 'SOME_VALUE' where id &gt; 100;
+
+<span class="c">-- Op 3: rango (cada minuto, desde +10 s, durante 15 min)</span>
+create event ev_range
+  on schedule every 1 minute
+  starts current_timestamp + interval 10 second
+  ends   current_timestamp + interval 900 second
+  on completion preserve
+  do
+    update some_table set some_field = 'SOME_VALUE' where id &gt; 100;
+
+<span class="c">-- Administrar</span>
+drop event ev_range;
+alter event ev_range enable;
+alter event ev_range disable;
+alter event ev_periodic_event on schedule every 30 day on completion preserve do (...);
+show events;</pre>
+<div class="card def"><strong>on completion preserve / not preserve:</strong> al terminar (evento único ejecutado o rango vencido), <code>preserve</code> deja el evento definido (deshabilitado); <code>not preserve</code> (por defecto) lo elimina automáticamente.</div>
+
+<h3>¿Qué tener en cuenta?</h3>
+<ul>
+<li>Con <code>timestamp</code> no se puede superar <b>2038-01-19 05:14:07</b>.</li>
+<li>Como los triggers, los eventos <b>no retornan nada</b>.</li>
+<li>Los eventos <b>no pueden crear/modificar/eliminar</b> funciones, procedimientos ni triggers.</li>
+<li>Los eventos <b>no pueden ser creados/modificados/eliminados</b> desde una función, procedimiento o trigger.</li>
+<li><b>Mejor práctica de diseño:</b> crear un procedimiento (PR) con la lógica y que el evento solo haga <code>call</code> → reutilizable, probable y mantenible (opción 2 de la discusión).</li>
+</ul>
+<h3>Pros y contras</h3>
+<table>
+<tr><td>✅</td><td>No se necesitan scripts externos para automatizar</td></tr>
+<tr><td>✅</td><td>Independientes del sistema operativo</td></tr>
+<tr><td>✅</td><td>Pueden usar funciones y procedimientos personalizados</td></tr>
+<tr><td>✅ / ❌</td><td>No ejecutan código externo (scripts, web services): bueno por seguridad, malo como limitación</td></tr>
+<tr><td>✅</td><td>Ejecución 100% en el servidor, 0% en los clientes</td></tr>
+<tr><td>❌</td><td><b>Un único hilo para todos los eventos</b> → muchos eventos pesados = cuello de botella</td></tr>
+</table>
+<div class="card key"><strong>Los eventos consumen CPU.</strong> Como DBA, revisa que no haya eventos innecesarios activos; eventos mal diseñados o a la misma hora consumen CPU silenciosamente.</div>
+
+<h3 id="ev-ej">Ejercicios de clase resueltos (BD world3)</h3>
+<details><summary>Preparación – tabla <code>my_events</code> y 3 registros <span class="tag slide">diapositiva</span></summary>
+<pre>create table my_events (
+  id           int not null auto_increment primary key,
+  event_name   varchar(30) not null,
+  result1      int,
+  result2      varchar(255),
+  last_updated datetime
+);
+insert into my_events (event_name, result1, result2, last_updated) values
+  ('my_event_scheduled', 0, '-', now()),
+  ('my_event_periodic',  0, '-', now()),
+  ('my_event_range',     0, '-', now());</pre></details>
+
+<details><summary>Ej. 1 – <code>ev_periodic</code> cada 30 s, suma 1 a result1 <span class="tag slide">diapositiva</span></summary>
+<pre>SET GLOBAL event_scheduler = ON;
+create event ev_periodic
+  on schedule every 30 second
+  on completion preserve
+  do
+    update my_events
+    set    result1 = result1 + 1,
+           last_updated = now()
+    where  event_name = 'my_event_periodic';
+
+select * from my_events;   <span class="c">-- repetir para ver cómo sube result1</span></pre></details>
+
+<details><summary>Ej. 2 – <code>ev_scheduled</code> 1 minuto después, "hola mundo!" <span class="tag slide">diapositiva</span></summary>
+<pre>create event ev_scheduled
+  on schedule at current_timestamp + interval 1 minute
+  on completion preserve
+  do
+    update my_events
+    set    result2 = 'hola mundo!',
+           last_updated = now()
+    where  event_name = 'my_event_scheduled';</pre></details>
+
+<details><summary>Ej. 3 – <code>ev_range</code> cada 30 s durante 5 min, cuenta ciudades <span class="tag slide">diapositiva</span></summary>
+<pre>create event ev_range
+  on schedule every 30 second
+  starts current_timestamp
+  ends   current_timestamp + interval 5 minute
+  on completion preserve
+  do
+    update my_events
+    set    result1 = (select count(*) from city),
+           last_updated = now()
+    where  event_name = 'my_event_range';</pre></details>
+
+<details><summary>Ej. 4 – Deshabilitar TODOS los eventos <span class="tag slide">diapositiva</span></summary>
+<pre><span class="c">-- Opción global (apaga el planificador)</span>
+SET GLOBAL event_scheduler = OFF;
+<span class="c">-- Opción por evento</span>
+alter event ev_periodic disable;
+alter event ev_scheduled disable;
+alter event ev_range disable;</pre></details>
+
+<h3 id="ev-extra">Práctica extra (estilo profesor)</h3>
+<details><summary>Crea un evento que todos los días a las 2:00 am borre de <code>logs</code> los registros con más de 90 días, usando la buena práctica de diseño. <span class="tag new">extra</span></summary>
+<pre>delimiter //
+create procedure pr_purge_logs()
+begin
+  delete from logs where fecha &lt; now() - interval 90 day;
+end //
+delimiter ;
+
+create event ev_purge_logs
+  on schedule every 1 day
+  starts (curdate() + interval 1 day + interval 2 hour)   <span class="c">-- mañana 02:00</span>
+  on completion preserve
+  do call pr_purge_logs();</pre></details>
+<details><summary>Black Friday: aplicar 20% de descuento a la categoría "ROPA" cada día desde el 2026-11-27 hasta el 2026-11-30. ¿Qué tipo de evento? Escríbelo. <span class="tag new">extra</span></summary>
+<div class="ans">Tipo <b>rango de tiempo</b> (¿cuándo? 27-nov; ¿cada cuánto? diario; ¿hasta cuándo? 30-nov).</div>
+<pre>create event ev_black_friday
+  on schedule every 1 day
+  starts '2026-11-27 00:00:00'
+  ends   '2026-11-30 23:59:59'
+  on completion not preserve
+  do call pr_aplicar_descuento('ROPA', 20);</pre></details>
+<details><summary>Programar una migración una sola vez el 2026-12-01 a las 23:00. <span class="tag new">extra</span></summary>
+<pre>create event ev_migracion
+  on schedule at '2026-12-01 23:00:00'
+  on completion not preserve
+  do call pr_migrar_clientes();</pre></details>
+<details><summary>Creaste el evento pero nunca se ejecuta. ¿Qué revisas? <span class="tag new">extra</span></summary>
+<div class="ans">1) <code>show variables like 'event_scheduler';</code> → debe estar ON. 2) <code>show events;</code> → estado ENABLED. 3) Que <code>starts/at</code> no esté en el pasado ni <code>ends</code> vencido. 4) Permisos del usuario (privilegio EVENT y sobre las tablas).</div></details>
+<details><summary>¿Por qué no programar 10 eventos pesados a las 00:00? <span class="tag new">extra</span></summary>
+<div class="ans">Hay <b>un único hilo</b> para eventos: se encolan, compiten por CPU y bloqueos, y generan un cuello de botella. Hay que escalonar horarios.</div></details>
+<details><summary>¿Puede un trigger crear un evento? ¿Puede un evento crear un procedimiento? <span class="tag new">extra</span></summary>
+<div class="ans">No y no. Los eventos no se crean desde funciones/procedimientos/triggers, y los eventos no pueden crear/modificar/eliminar funciones, procedimientos ni triggers.</div></details>
+</section>
+
+<!-- ======================= CHEAT SHEET ======================= -->
+<section class="topic" id="cheat">
+<h2><small>Repaso rápido</small>Hoja de comandos</h2>
+<pre><span class="c">-- ÍNDICES</span>
+create [unique|fulltext] index idx on t(col1[, col2]) [using btree|hash];
+alter table t add index idx(col) using btree;
+alter table t drop index idx;      drop index idx on t;
+show indexes from t;
+
+<span class="c">-- PLAN</span>
+explain select ...;                explain format=json select ...;
+analyze select ...;                <span class="c">-- ejecuta de verdad</span>
+
+<span class="c">-- MOTORES</span>
+show engines;
+create table t(...) engine = InnoDB|MyISAM|Aria|Memory|CSV|Archive|BLACKHOLE;
+alter table t engine = Aria;
+select * from seq_1_to_10_step_2;  select cast(seq as signed) - 5 from seq_0_to_10;
+rand(), md5(uuid()), date_add(fecha, interval n day), cast(x as int)
+
+<span class="c">-- PARTICIONES</span>
+partition by range(expr) (partition p values less than (n), ... maxvalue)
+partition by list(expr) (partition p values in (...))   | list columns(col)
+partition by [linear] hash(expr) partitions n
+partition by [linear] key(col) partitions n
+alter table t add partition (...);         alter table t drop partition p;
+alter table t coalesce partition n;        alter table t remove partitioning;
+alter table t reorganize partition p into (...);
+
+<span class="c">-- EVENTOS</span>
+set global event_scheduler = on;
+create event e on schedule every N unit [starts ..] [ends ..]
+  on completion [not] preserve do ...;
+create event e on schedule at current_timestamp + interval N unit do ...;
+alter event e enable|disable;   drop event e;   show events;</pre>
+</section>
+
+<!-- ======================= QUIZ ======================= -->
+<section class="topic quiz" id="quiz">
+<h2><small>Autoevaluación</small>Simulacro</h2>
+<div id="score">Puntaje: 0 / 0</div>
+<div id="quizBox"></div>
+</section>
+</main>
+</div>
+
+<script>
+const Q = [
+ ["¿Qué estructura de datos usan generalmente los índices?",["Listas enlazadas","Árboles B+","Grafos","Tablas hash"],1,"Los índices son generalmente árboles B+ (BTREE es el tipo por defecto)."],
+ ["Columna gender con 2 valores en 10 M de filas. Su selectividad es:",["Muy alta","Alta","Muy baja","No aplica"],2,"Solo reduce la búsqueda a ~50%: selectividad muy baja, mal candidato a índice."],
+ ["¿Qué índice NO soporta búsquedas por rango?",["BTREE","HASH","Primary key","Plain"],1,"HASH solo sirve para igualdades exactas."],
+ ["¿Cuál de estas condiciones SÍ puede usar un índice BTREE sobre nombre?",["like '%A'","like '%A%'","like 'A%'","upper(nombre)='A'"],2,"Solo el prefijo sin comodín inicial usa el índice."],
+ ["Índice (last_name, first_name). ¿Qué consulta NO lo aprovecha?",["where last_name='X'","where last_name='X' and first_name='Y'","where first_name='Y'","where last_name like 'X%'"],2,"Sin el nivel 1 (last_name) el índice no se puede usar: el orden importa."],
+ ["¿Qué tipo de índice por valor permite NULL pero no duplicados?",["Primary key","Unique","Plain","Full text"],1,"Unique: sin duplicados, con nulos."],
+ ["Si no se especifica 'using' al crear un índice plano en MariaDB, se usa:",["HASH","RTREE","BTREE","Invertido"],2,"BTREE por defecto. FULLTEXT usa índice invertido."],
+ ["¿Cuál es la principal diferencia entre EXPLAIN y ANALYZE?",["EXPLAIN ejecuta la consulta","ANALYZE no ejecuta la consulta","EXPLAIN estima con estadísticas; ANALYZE ejecuta realmente","Son idénticos"],2,"EXPLAIN = lo que el DBMS cree; ANALYZE = lo que realmente pasó."],
+ ["En un EXPLAIN, type = ALL significa:",["Usa todos los índices","Full scan","Acceso por PK","Join completo"],1,"ALL es full scan: el peor tipo de acceso."],
+ ["¿Por qué where upper(Code)='AFG' es lenta?",["upper es una función lenta en sí","La función sobre la columna anula el índice","Code no tiene índice","Las mayúsculas no se pueden comparar"],1,"Aplicar funciones a la columna obliga a calcular fila por fila → full scan."],
+ ["Extra: 'Using filesort' indica:",["Uso de índice cubriente","Ordenamiento adicional sin índice","Lectura desde archivo CSV","Partición podada"],1,"El order by no se resolvió con un índice; se ordena aparte."],
+ ["Aumentar CPU o RAM del servidor es optimización a nivel de:",["Diseño","Configuración de BD","Hardware (crecimiento vertical)","Índices"],2,"Crecimiento vertical = hardware."],
+ ["Motor por defecto de MariaDB y MySQL:",["MyISAM","Aria","InnoDB","Memory"],2,"InnoDB: transaccional, bloqueo por registro."],
+ ["¿Qué motor bloquea a nivel de registro?",["MyISAM","InnoDB","Aria","CSV"],1,"MyISAM bloquea tabla completa; Aria tabla parcial; InnoDB por registro."],
+ ["¿Qué motor no soporta columnas opcionales (nullable)?",["InnoDB","Memory","CSV","Aria"],2,"CSV: ERROR 1178, todas las columnas deben ser NOT NULL."],
+ ["Al insertar millones de filas en un motor Memory aparece 'table is full' porque:",["Memory no soporta inserts","Superó max_heap_table_size (RAM limitada)","Falta una PK","Es transaccional"],1,"La memoria no es infinita."],
+ ["Un count(*) sobre una tabla BLACKHOLE después de insertar 1 M de filas devuelve:",["1.000.000","0","NULL","Error"],1,"Blackhole descarta los datos; solo guarda la estructura."],
+ ["¿Qué archivos genera una tabla Aria?",[".ibd",".MYD y .MYI",".MAD y .MAI",".CSV y .CSM"],2,"Aria: .frm, .MAD (datos), .MAI (índices)."],
+ ["¿Qué devuelve select * from seq_10_to_1_step_3?",["10,7,4,1","1,4,7,10","10,8,6,4,2","10,7,4"],0,"Descendente de 10 a 1 con saltos de 3."],
+ ["¿Por qué falla select seq - 10 from seq_1_to_5?",["seq no existe","seq es BIGINT UNSIGNED y no admite negativos","Falta un alias","Hay que usar step"],1,"Se soluciona con cast(seq as int) - 10."],
+ ["Si no hay datos suficientes para escoger motor, se recomienda:",["MyISAM","Memory","InnoDB","Archive"],2,"Según la diapositiva: ante la duda, InnoDB."],
+ ["Particionar una tabla significa que:",["Se crean varias tablas lógicas","Sigue siendo una tabla lógica pero varios archivos físicos","Se duplican los datos","Se crea un índice por partición"],1,"Lógicamente una tabla; físicamente varios archivos."],
+ ["Tipo de particionamiento ideal para logs/auditorías:",["LIST","HASH","RANGE","KEY"],2,"RANGE para tiempos y fechas."],
+ ["hash(month(birth_date)) partitions 3, birth_date = '1992-07-22'. Partición:",["p0","p1","p2","p7"],1,"7 % 3 = 1 → p1."],
+ ["¿Qué comando reduce de 6 a 4 particiones en una tabla HASH?",["alter table t drop partition 2","alter table t coalesce partition 2","alter table t remove partitioning","alter table t reorganize 4"],1,"coalesce partition n quita n particiones (solo hash/key)."],
+ ["¿Qué pasa con los datos al hacer alter table t drop partition p_2020?",["Se mueven a otra partición","Se eliminan","Se archivan","Nada, solo se quita la definición"],1,"drop partition borra la partición y sus datos."],
+ ["Máximo de particiones por tabla en MariaDB:",["64","256","1024","Ilimitado"],2,"1024; y más particiones no implica mejor rendimiento."],
+ ["¿Qué motor NO soporta particionamiento?",["InnoDB","Aria","CSV","MyISAM"],2,"CSV (también MERGE y FEDERATED) no se pueden particionar."],
+ ["Sin ejecutar ___, los eventos no se ejecutan:",["SET GLOBAL event_scheduler = ON","start transaction","show events","grant all"],0,"El planificador de eventos debe estar activo."],
+ ["Descuentos diarios durante un mes: tipo de evento",["Periódico indefinido","Única ejecución","Rango de tiempo","Trigger"],2,"Tiene inicio, frecuencia y fin → rango (starts/ends)."],
+ ["¿Cuál es una limitación de los eventos?",["Dependen del sistema operativo","Corren en los clientes","Comparten un único hilo","Retornan resultados"],2,"Un único hilo: muchos eventos pesados = cuello de botella."],
+ ["Mejor práctica de diseño para un evento:",["Poner toda la lógica dentro del evento","Que el evento llame a un procedimiento almacenado","Crear el evento desde un trigger","Usar un evento por cada fila"],1,"El PR encapsula la lógica; el evento solo hace call."],
+ ["Fecha máxima al manejar timestamp en eventos:",["2099-12-31","2038-01-19 05:14:07","9999-12-31","1970-01-01"],1,"Límite del tipo timestamp."],
+ ["on completion not preserve hace que:",["El evento se repita siempre","El evento se elimine al terminar","El evento quede deshabilitado","El evento no se ejecute"],1,"not preserve (por defecto) borra el evento cuando completa su programación."]
+];
+const box=document.getElementById('quizBox'),score=document.getElementById('score');
+let ok=0,done=0;
+Q.forEach((q,i)=>{
+  const d=document.createElement('div');d.className='q';
+  d.innerHTML=`<p>${i+1}. ${q[0]}</p><div class="opts"></div><div class="exp">${q[3]}</div>`;
+  const o=d.querySelector('.opts');
+  q[1].forEach((t,j)=>{const b=document.createElement('button');b.className='opt';b.type='button';b.textContent=t;
+    b.onclick=()=>{if(d.classList.contains('done'))return;d.classList.add('done');done++;
+      if(j===q[2]){ok++;b.classList.add('right')}else{b.classList.add('wrong');o.children[q[2]].classList.add('right')}
+      score.textContent=`Puntaje: ${ok} / ${done}  (de ${Q.length})`;};
+    o.appendChild(b)});
+  box.appendChild(d);
+});
+score.textContent=`Puntaje: 0 / 0  (de ${Q.length})`;
+document.getElementById('themeBtn').onclick=()=>{
+  const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  r.dataset.theme=cur==='dark'?'light':'dark';
+};
+</script>
+</body>
+</html>
